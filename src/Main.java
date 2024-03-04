@@ -39,7 +39,7 @@ public class Main {
                     help.create_table();
                     break;
                 case (3):
-                    help.to_excel("oper", "output");
+                    help.to_excel("oper", "output.xlsx");
                     break;
                 case (4):
                     //            вычисление
