@@ -8,12 +8,12 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class Helper {
-    private static Statement stmt;
+    private Statement stmt;
 
-    public  void Connection(String url, String user, String password) throws SQLException {
+    public void Connection(String url, String user, String password) throws SQLException {
         DriverManager.registerDriver(new Driver());
         Connection con = DriverManager.getConnection(url, user, password);
-        stmt = con.createStatement();
+        this.stmt = con.createStatement();
 
 
         if (!con.isClosed()) {
