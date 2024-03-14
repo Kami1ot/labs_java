@@ -12,8 +12,6 @@ public class Laba5 {
         Scanner in = new Scanner(System.in);
         String tablename = "laba5";
 
-
-
         while(true) {
 
             System.out.println("--------------------------------------------------");

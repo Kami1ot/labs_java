@@ -77,6 +77,7 @@ public class Helper extends MyThread{
 
 
 
+
         // Записываем данные из ResultSet в Excel
         Row h_row = sheet.createRow(0);
         for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++){
