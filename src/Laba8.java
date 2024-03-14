@@ -3,19 +3,17 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Laba6 {
-
+public class Laba8 {
     public static void main(String[] args) throws SQLException, IOException {
         Helper helper = new Helper();
         helper.Connection("jdbc:mysql://localhost/test", "root", "ensoxPER324");
         Scanner in = new Scanner(System.in);
-        String tablename = "matrix";
+        String tablename = "laba8";
         while (true) {
-
             System.out.println("--------------------------------------------------");
             System.out.println("1 - Вывод таблиц");
             System.out.println("2 - Создание таблицы");
-            System.out.println("3 - Ввод двух матриц и их умножение");
+            System.out.println("3 - Ввод данных о студенте");
             System.out.println("4 - Excel");
             System.out.println("5 - Выход");
             System.out.println("--------------------------------------------------");
@@ -44,39 +42,34 @@ public class Laba6 {
                     helper.create_table();
                     break;
                 case 3:
-                    Matrix matrix = new Matrix(3);
-                    helper.execute_Update("INSERT INTO " + tablename + " (matrix1,matrix2) VALUES ('" + Arrays.deepToString(matrix.getFirstMatrix()) + "','" + Arrays.deepToString(matrix.getSecondMatrix()) + "')");
+                    Worker student = new Worker();
+                    System.out.print("Введите имя студента: ");
+                    in.nextLine();
+                    student.setName(in.nextLine());
                     System.out.println("--------------------------------------------------");
-                    System.out.println("Перемножить матрицы? 1 - да, 0 - нет");
-                    System.out.println("--------------------------------------------------");
-                    while (true) {
-                        while (!in.hasNextInt()) {
-                            System.out.print("Ошибка! Введите корректное число: ");
-                            in.next();
-                        }
-
-                        int answer = in.nextInt();
-                        System.out.println("--------------------------------------------------");
-                        if (answer > 1) {
-                            System.out.println("Неверный ввод числа!");
-                        }
-                        if (answer == 1) {
-                            int[][] rs =  matrix.multiplyMatrices();
-                            helper.execute_Update("UPDATE " + tablename + " SET multiply = '" + Arrays.deepToString(rs) + "' WHERE matrix1= '" + Arrays.deepToString(matrix.getFirstMatrix()) + "';");
-                            break;
-                        } else if (answer == 0) {
-                            break;
-                        }
+                    System.out.print("Введите возраст студента: ");
+                    while (!in.hasNextInt()) {
+                        System.out.print("Ошибка! Введите корректное число: ");
+                        in.next();
                     }
+
+                    student.setAge(in.nextInt());
+                    System.out.println("--------------------------------------------------");
+                    System.out.print("Введите размер зарплаты: ");
+                    while (!in.hasNextInt()) {
+                        System.out.print("Ошибка! Введите корректное число: ");
+                        in.next();
+                    }
+
+                    student.setSalary(in.nextInt());
+                    System.out.println("--------------------------------------------------");
+                    System.out.println("Имя студента: " + student.getName() + "\nВозраст: " + student.getAge() + "\nЗарплата:" + student.getSalary());
+                    helper.execute_Update("INSERT INTO " + tablename + " (stud_name, stud_age, salary) VALUES ('" + student.getName() + "'," + student.getAge() + "," + student.getSalary() + ")");
                     break;
                 case 4:
                     helper.to_excel(tablename,"output.xlsx");
                     break;
-
-
-
             }
-
         }
     }
 }

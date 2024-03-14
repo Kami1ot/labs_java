@@ -1,13 +1,15 @@
 import java.util.Arrays;
 
 public final class Matrix extends ArrayPI {
+
+
     public Matrix(int matrix_lenth) {
         super(matrix_lenth);
     }
-
-    public void multiplyMatrices() {
-        int[][] resultMatrix = new int[matrix_lenth][matrix_lenth];
-
+    protected int[][] resultMatrix;
+    public int[][] multiplyMatrices() {
+        resultMatrix = new int[matrix_lenth][matrix_lenth];
+        System.out.println("--------------------------------------------------");
         System.out.println("Первая матрица: ");
         for (int i = 0; i < matrix_lenth; i++) {
             for (int j = 0; j < matrix_lenth; j++) {
@@ -17,6 +19,7 @@ public final class Matrix extends ArrayPI {
         }
 
         System.out.println(Arrays.deepToString(firstMatrix));
+        System.out.println("--------------------------------------------------");
         System.out.println("Вторая матрица: ");
         for (int i = 0; i < matrix_lenth; i++) {
                 for (int j = 0; j < matrix_lenth; j++) {
@@ -27,7 +30,7 @@ public final class Matrix extends ArrayPI {
 
 
         System.out.println(Arrays.deepToString(secondMatrix));
-
+        System.out.println("--------------------------------------------------");
         for (int i = 0; i < matrix_lenth; i++) {
             for (int j = 0; j < matrix_lenth; j++) {
                 for (int k = 0; k < matrix_lenth; k++) {
@@ -42,6 +45,8 @@ public final class Matrix extends ArrayPI {
             }
             System.out.println();
         }
+        System.out.println("--------------------------------------------------");
+        return resultMatrix;
     }
 }
 

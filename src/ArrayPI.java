@@ -9,14 +9,14 @@ public class ArrayPI {
         Scanner in = new Scanner(System.in);
         firstMatrix = new int[matrix_lenth][matrix_lenth];
         secondMatrix = new int[matrix_lenth][matrix_lenth];
-
+        System.out.println("--------------------------------------------------");
         System.out.println("Enter first matrix:");
         for (int i = 0; i < matrix_lenth; i++) {
             for (int j = 0; j < matrix_lenth; j++) {
                 firstMatrix[i][j] = in.nextInt();
             }
         }
-
+        System.out.println("--------------------------------------------------");
         System.out.println("Enter second matrix:");
         for (int i = 0; i < matrix_lenth; i++) {
             for (int j = 0; j < matrix_lenth; j++) {
