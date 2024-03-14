@@ -1,6 +1,9 @@
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Laba5 {
 
@@ -82,22 +85,62 @@ public class Laba5 {
 
                         switch (input) {
                             case 1:
-                                StringBuffer reversed_str_1 = new StringBuffer(first_str).reverse();
-                                StringBuffer reversed_str_2 = new StringBuffer(second_str).reverse();
-                                System.out.println("Обратный порядок символов: " + reversed_str_1);
-                                System.out.println("Обратный порядок символов: " + reversed_str_2);
-                                System.out.println("--------------------------------------------------");
-
-                                helper.execute_Update("UPDATE " + tablename + " SET string_reverse = '" + reversed_str_1 + "' WHERE string = '" + first_str + "';");
-                                helper.execute_Update("UPDATE " + tablename + " SET string_reverse = '" + reversed_str_2 + "' WHERE string = '" + second_str + "';");
+                                ExecutorService executor = Executors.newFixedThreadPool(2);
+                                executor.submit(() -> {
+                                    StringBuilder reversed1 = new StringBuilder(first_str).reverse();
+                                    try {
+                                        helper.execute_Update("UPDATE " + tablename + " SET string_reverse = '" + reversed1 + "' WHERE string = '" + first_str + "';");
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    synchronized (System.out) {
+                                        System.out.print(reversed1 + " ");
+                                    }
+                                });
+                                executor.submit(() -> {
+                                    StringBuilder reversed2 = new StringBuilder(second_str).reverse();
+                                    try {
+                                        helper.execute_Update("UPDATE " + tablename + " SET string_reverse = '" + reversed2 + "' WHERE string = '" + second_str + "';");
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    synchronized (System.out) {
+                                        System.out.println(reversed2);
+                                    }
+                                });
+                                executor.shutdown();
+                                try {
+                                    executor.awaitTermination(1, TimeUnit.SECONDS);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
 
                                 break;
                             case 2:
-                                StringBuffer merged_str = new StringBuffer(first_str).append(second_str);
-                                System.out.println("Объединенная строка: " + merged_str);
-                                System.out.println("--------------------------------------------------");
-                                helper.execute_Update("UPDATE " + tablename + " SET string_merge = '" + merged_str + "' WHERE string = '" + first_str + "';");
-                                helper.execute_Update("UPDATE " + tablename + " SET string_merge = '" + merged_str + "' WHERE string = '" + second_str + "';");
+                                StringBuffer merged = new StringBuffer(first_str).append(" ").append(second_str);
+                                System.out.println(merged);
+                                ExecutorService executor1 = Executors.newFixedThreadPool(2);
+                                executor1.submit(() -> {
+                                    try {
+                                        helper.execute_Update("UPDATE " + tablename + " SET string_merge = '" + merged + "' WHERE string = '" + first_str + "';");
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                });
+                                executor1.submit(() -> {
+                                    try {
+                                        helper.execute_Update("UPDATE " + tablename + " SET string_merge = '" + merged + "' WHERE string = '" + second_str + "';");
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
+                                executor1.shutdown();
+                                try {
+                                    executor1.awaitTermination(1, TimeUnit.SECONDS);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 break;
 
                             case 3:
@@ -111,6 +154,4 @@ public class Laba5 {
         }
     }
 }
-
-
 
