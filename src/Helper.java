@@ -7,26 +7,33 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Helper {
+public class Helper extends MyThread{
     private Statement stmt;
 
-    public void Connection(String url, String user, String password) throws SQLException {
-        DriverManager.registerDriver(new Driver());
-        Connection con = DriverManager.getConnection(url, user, password);
-        this.stmt = con.createStatement();
+    public void Connection(String url, String user, String password) {
 
-
-        if (!con.isClosed()) {
-            System.out.println("--------------------------------------------------");
-            System.out.println("Data Base Connected");
-            System.out.println("--------------------------------------------------");
+        try {
+            DriverManager.registerDriver(new Driver());
+            Connection con = DriverManager.getConnection(url, user, password);
+            this.stmt = con.createStatement();
+            if (!con.isClosed()) {
+                System.out.println("--------------------------------------------------");
+                System.out.println("Data Base Connected");
+                System.out.println("--------------------------------------------------");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
         }
+
+
+
 
     }
 
     public void show_table() throws SQLException {
+
         System.out.println("--------------------------------------------------");
-        ResultSet rs = stmt.executeQuery("SHOW TABLES");
+        ResultSet rs = this.stmt.executeQuery("SHOW TABLES");
         int counter = 0;
         System.out.printf("| %-4s | %-20s |\n", "ID", "Названия таблиц");
         System.out.println("--------------------------------------------------");
@@ -45,18 +52,17 @@ public class Helper {
         System.out.print("Введите название таблицы: ");
         String tablename = in.nextLine();
         try {
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + tablename + " (test_column int);");
+            this.stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + tablename + " (test_column int);");
             System.out.println("Таблица " + tablename + " создана");
         }catch(SQLSyntaxErrorException e){
-            System.out.println("Неверный ввод названия таблицы, введите другое");
+            System.out.println("Неверное название таблицы, введите другое название");
         }
 
     }
 
 
     public void to_excel(String tablename, String filename) throws IOException, SQLException {
-
-        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tablename + ";");
+        ResultSet rs = this.stmt.executeQuery("SELECT * FROM " + tablename + ";");
 
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Data");
@@ -68,6 +74,7 @@ public class Helper {
         cellStyle.setBorderBottom(BorderStyle.THIN);
         cellStyle.setBorderLeft(BorderStyle.THIN);
         cellStyle.setBorderRight(BorderStyle.THIN);
+
 
 
         // Записываем данные из ResultSet в Excel
@@ -123,10 +130,11 @@ public class Helper {
         }
         readWorkbook.close();
         System.out.println("-".repeat(rs.getMetaData().getColumnCount() * (maxWidth + rs.getMetaData().getColumnCount())+6));
+
     }
 
     public void execute_Update(String query) throws SQLException {
-        stmt.executeUpdate(query);
+        this.stmt.executeUpdate(query);
     }
 
 }
