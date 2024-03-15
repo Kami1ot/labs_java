@@ -7,7 +7,7 @@ public class Laba7 {
     public static void main(String[] args) throws SQLException, IOException {
 
         Helper helper = new Helper();
-        helper.Connection("jdbc:mysql://localhost/test", "root", "Petya9644");
+        helper.Connection("jdbc:mysql://localhost/test", "root", "ensoxPER324");
         Scanner in = new Scanner(System.in);
         String tablename = "laba7";
 
@@ -87,7 +87,7 @@ public class Laba7 {
                     break;
 
                 case 4:
-                    helper.to_excel(tablename, "laba7.xlsx");
+                    helper.to_excel(tablename, "output.xlsx");
                     break;
 
 

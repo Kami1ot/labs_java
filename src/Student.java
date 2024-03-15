@@ -1,6 +1,6 @@
 
 
-public class Student {
+public abstract class Student {
     private String name;
     private int age;
     public void setName(String name){
