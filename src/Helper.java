@@ -1,17 +1,15 @@
 import com.mysql.cj.jdbc.Driver;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.List;
-
-import static org.apache.poi.hsmf.datatypes.Types.BOOLEAN;
+import java.util.Scanner;
 
 public class Helper {
     private Statement stmt;
@@ -160,10 +158,15 @@ public class Helper {
         for (int i = 0; i < columnCount; i++) {
             columnNames.add(headerRow.getCell(i).getStringCellValue());
         }
+        //ввод значения i
+
+
 
 
         StringBuilder createTableQuery = new StringBuilder();
         createTableQuery.append("CREATE TABLE IF NOT EXISTS ").append(tableName).append(" (");
+        //CREATE TABLE IF NOT EXISTS.append(TBname).append( "(").append("`").append(columnNames.get(i)).append("`").append(" VARCHAR(255));")
+        //
 
         for (int i = 0; i < columnNames.size(); i++) {
             if (i > 0) {
