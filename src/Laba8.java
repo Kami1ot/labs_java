@@ -62,7 +62,7 @@ public class Laba8 {
 
                     student.setSalary(in.nextInt());
                     System.out.println("--------------------------------------------------");
-                    System.out.println("Имя студента: " + student.getName() + "\nВозраст: " + student.getAge() + "\nЗарплата:" + student.getSalary());
+                    System.out.println("Имя студента: " + student.getName() + "\nВозраст: " + student.getAge() + "\nЗарплата: " + student.getSalary());
                     helper.execute_Update("INSERT INTO " + tablename + " (stud_name, stud_age, salary) VALUES ('" + student.getName() + "'," + student.getAge() + "," + student.getSalary() + ")");
                     break;
                 case 4:

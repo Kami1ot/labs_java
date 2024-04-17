@@ -70,7 +70,7 @@ public class Laba6 {
                     }
                     break;
                 case 4:
-                    helper.to_excel(tablename,"output.xlsx");
+                    helper.to_excel(tablename,"");
                     break;
 
 
