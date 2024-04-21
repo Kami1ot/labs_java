@@ -1,19 +1,18 @@
 import com.mysql.cj.jdbc.Driver;
+import org.apache.logging.log4j.core.util.ArrayUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Helper {
-    private Statement stmt;
-    private Connection con;
+    public Statement stmt;
+    public Connection con;
 
 
     public void Connection(String url, String user, String password) {
@@ -271,4 +270,97 @@ public class Helper {
 
 
     }
+    public  String removeElementFromArrays(String arrays, int elementToRemove) {
+        // Разделяем строку на две части по разделителю ":"
+        String[] arrayStrings = arrays.split(":");
+
+        // Преобразуем каждую подстроку в массив, используя разделитель ", " (запятая и пробел)
+        String[] array1Strings = new String[0];
+        String[] array2Strings = new String[0];
+        try {
+            array1Strings = arrayStrings[0].substring(1, arrayStrings[0].length() - 1).split(", ");
+            array2Strings = arrayStrings[1].substring(1, arrayStrings[1].length() - 1).split(", ");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Вы не правильно ввели id элемента, попробуйте еще раз");
+        }
+
+        Integer[] array1 = new Integer[array1Strings.length];
+        for (int i = 0; i < array1Strings.length; i++) {
+            array1[i] = Integer.parseInt(array1Strings[i]);
+        }
+        Integer[] array2 = new Integer[array2Strings.length];
+        for (int i = 0; i < array2Strings.length; i++) {
+            array2[i] = Integer.parseInt(array2Strings[i]);
+        }
+
+        // Удаляем элемент из каждого массива
+        try {
+            array1 = ArrayUtils.remove(array1, elementToRemove);
+            array2 = ArrayUtils.remove(array2, elementToRemove);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Вы неправильно ввели номер элемента (начинается с 0), попробуйте еще раз");
+        }
+
+        // Преобразуем каждый массив обратно в строковый формат
+        String array1String = Arrays.toString(array1);
+        String array2String = Arrays.toString(array2);
+
+        // Объединяем две строки обратно в одну используя разделитель
+        return array1String + ":" + array2String;
+    }
+    public void deleteElementById(int id, String tablename) throws SQLException {
+        String query = "SELECT * FROM " + tablename + " WHERE id = ?";
+        PreparedStatement statement = con.prepareStatement(query);
+        statement.setInt(1, id);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            String list = resultSet.getString("list");
+            String strList = resultSet.getString("strlist");
+            String setList = resultSet.getString("setlist");
+
+            List<Integer> listElements = Arrays.stream(list.substring(1, list.length() - 1).split(", "))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            List<Integer> strListElements = Arrays.stream(strList.split(", "))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            Set<Integer> setElements = Arrays.stream(setList.substring(1, setList.length() - 1).split(", "))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toSet());
+
+            String strElemnt = strListElements.toString().substring(1,strListElements.toString().length()-1);
+
+            System.out.println("Список: " + listElements);
+            System.out.println("Строка: " + strElemnt);
+            System.out.println("Множество: " + setElements);
+
+            System.out.println("Введите элемент для удаления:");
+            Scanner scanner = new Scanner(System.in);
+            int element = scanner.nextInt();
+
+            listElements.remove(Integer.valueOf(element));
+            strListElements.remove(Integer.valueOf(element));
+            String strElem = strListElements.toString().substring(1,strListElements.toString().length()-1);
+            setElements.remove(element);
+
+            System.out.println("Список: " + listElements);
+            System.out.println("Строка: " + strListElements);
+            System.out.println("Множество: " + setElements);
+
+            query = "UPDATE " + tablename + " SET list = ?, strlist = ?, setlist = ? WHERE id = ?";
+            statement = con.prepareStatement(query);
+            statement.setString(1, listElements.toString());
+            statement.setString(2, String.join(", ", strElem));
+            statement.setString(3, setElements.toString());
+            statement.setInt(4, id);
+            statement.executeUpdate();
+
+            System.out.println("Элемент успешно удален.");
+        } else {
+            System.out.println("Запись с указанным ID не найдена.");
+        }
+    }
+
+
 }
